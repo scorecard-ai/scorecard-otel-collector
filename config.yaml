@@ -1,0 +1,59 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    send_batch_max_size: 10000
+    timeout: 1s
+
+exporters:
+  otlp:
+    endpoint: "api.honeycomb.io:443"
+    headers:
+      "x-honeycomb-team": "x2R7UaZZi2O36uukj6rhSB"
+  clickhouse:
+    endpoint: tcp://clickhouse:9000
+    database: otel
+    logs_table_name: otel_logs
+    traces_table_name: otel_traces
+    ttl: 12h
+    timeout: 10s
+    sending_queue:
+      queue_size: 100
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 300s
+
+extensions:
+  healthcheckv2:
+    use_v2: true
+    component_health:
+      include_permanent_errors: false
+      include_recoverable_errors: true
+      recovery_duration: 5m
+    http:
+      endpoint: "localhost:13133"
+      status:
+        enabled: true
+        path: "/health/status"
+      config:
+        enabled: true
+        path: "/health/config"
+    grpc:
+      endpoint: "localhost:13132"
+      transport: "tcp"
+
+service:
+  extensions: [healthcheckv2]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp]

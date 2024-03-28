@@ -1,0 +1,22 @@
+dist:
+  name: scorecard-otelcol
+  description: Scorecard AI OpenTelemetry Collector
+  output_path: ./scorecard-otelcol
+  otelcol_version: 0.96.0
+  version: 0.0.1
+
+exporters:
+  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.96.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/clickhouseexporter v0.96.0
+
+extensions:
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextensionv2 v0.96.0
+
+processors:
+  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.96.0
+
+receivers:
+  - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.96.0
+
+replaces:
+  - github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextensionv2 => github.com/mwear/opentelemetry-collector-contrib/extension/healthcheckextensionv2 2f3751f6d28d518cda8666bb3b33405fd68fc2e4
