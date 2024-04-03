@@ -13,6 +13,7 @@ This package provides daemon of ADOT Collector
 %setup -q
 
 %install
+whoami
 rm -rf ${RPM_BUILD_ROOT}
 mkdir -p ${RPM_BUILD_ROOT}
 cp -fa * ${RPM_BUILD_ROOT}
@@ -56,7 +57,7 @@ fi
 
 # create user
 if ! id soc >/dev/null 2>&1; then
-    useradd -r -M soc -d /home/soc -g soc -c "ADOT Collector" -s $(test -x /sbin/nologin && echo /sbin/nologin || (test -x /usr/sbin/nologin && echo /usr/sbin/nologin || (test -x /bin/false && echo /bin/false || echo /bin/sh))) >/dev/null 2>&1
+    useradd -r -M soc -d /home/soc -g soc -c "Scorecard Collector" -s $(test -x /sbin/nologin && echo /sbin/nologin || (test -x /usr/sbin/nologin && echo /usr/sbin/nologin || (test -x /bin/false && echo /bin/false || echo /bin/sh))) >/dev/null 2>&1
     echo "create user soc, result: $?"
 fi
 
