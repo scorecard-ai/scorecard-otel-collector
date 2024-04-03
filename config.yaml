@@ -17,16 +17,16 @@ exporters:
 extensions:
   healthcheckv2:
     use_v2: true
+    grpc:
+      endpoint: "0.0.0.0:13132"
+      transport: "tcp"
     http:
-      endpoint: "localhost:13133"
+      endpoint: "0.0.0.0:13133"
       status:
         enabled: true
         detailed: false
       config:
         enabled: false
-    grpc:
-      endpoint: "localhost:13132"
-      transport: "tcp"
 
 service:
   extensions: [healthcheckv2]
