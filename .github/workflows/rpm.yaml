@@ -25,6 +25,12 @@ jobs:
         env:
           VERSION: ${{ inputs.VERSION }}
 
+      - name: Set builder-config version.
+        run: |
+          sed -i "s/VERSION_STRING/$VERSION/g"
+        env:
+          VERSION: ${{ inputs.VERSION }}
+
       - name: Package RPM
         run: ./build.sh
 

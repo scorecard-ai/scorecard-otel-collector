@@ -3,7 +3,7 @@ dist:
   description: Scorecard AI OpenTelemetry Collector
   output_path: ./scorecard-otel-collector
   otelcol_version: 0.97.0
-  version: 0.0.1
+  version: VERSION_STRING
 
 exporters:
   - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.97.0
