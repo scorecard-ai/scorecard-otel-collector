@@ -24,7 +24,6 @@ extensions:
       endpoint: "0.0.0.0:13133"
       status:
         enabled: true
-        detailed: false
       config:
         enabled: false
 
