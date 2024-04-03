@@ -1,7 +1,7 @@
 dist:
-  name: scorecard-otelcol
+  name: scorecard-otel-collector
   description: Scorecard AI OpenTelemetry Collector
-  output_path: ./scorecard-otelcol
+  output_path: ./scorecard-otel-collector
   otelcol_version: 0.97.0
   version: 0.0.1
 

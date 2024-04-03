@@ -22,56 +22,54 @@ SPEC_FILE="tools/packaging/linux/build.spec"
 BUILD_ROOT="$(pwd)/build/rpmbuild"
 WORK_DIR="$(pwd)/build/rpmtar"
 VERSION=$(cat VERSION)
-RPM_NAME=aws-otel-collector
-AOC_ROOT=${WORK_DIR}/${RPM_NAME}-${VERSION}
+RPM_NAME=scorecard-otel-collector
+SOC_ROOT=${WORK_DIR}/${RPM_NAME}-${VERSION}
 
 echo "Creating rpmbuild workspace"
 mkdir -p "${BUILD_ROOT}"/{RPMS,SRPMS,BUILD,SOURCES,SPECS}
 
 echo "Creating file structure"
-mkdir -p "${AOC_ROOT}/opt/aws/aws-otel-collector/logs"
-mkdir -p "${AOC_ROOT}/opt/aws/aws-otel-collector/bin"
-mkdir -p "${AOC_ROOT}/opt/aws/aws-otel-collector/etc"
-mkdir -p "${AOC_ROOT}/opt/aws/aws-otel-collector/var"
-mkdir -p "${AOC_ROOT}/opt/aws/aws-otel-collector/doc"
-mkdir -p "${AOC_ROOT}/etc/init"
-mkdir -p "${AOC_ROOT}/etc/systemd/system"
-mkdir -p "${AOC_ROOT}/usr/bin"
-mkdir -p "${AOC_ROOT}/etc/amazon"
-mkdir -p "${AOC_ROOT}/var/log/amazon"
-mkdir -p "${AOC_ROOT}/var/run/amazon"
+mkdir -p "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/logs"
+mkdir -p "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/bin"
+mkdir -p "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/etc"
+mkdir -p "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/var"
+mkdir -p "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/doc"
+mkdir -p "${SOC_ROOT}/etc/init"
+mkdir -p "${SOC_ROOT}/etc/systemd/system"
+mkdir -p "${SOC_ROOT}/usr/bin"
+mkdir -p "${SOC_ROOT}/etc/amazon"
+mkdir -p "${SOC_ROOT}/var/log/amazon"
+mkdir -p "${SOC_ROOT}/var/run/amazon"
 
 echo "Copying application files"
 # License, version, release note...
-cp LICENSE "${AOC_ROOT}/opt/aws/aws-otel-collector/"
-cp VERSION "${AOC_ROOT}/opt/aws/aws-otel-collector/bin/"
-cp "docs/releases/${VERSION}.md" "${AOC_ROOT}/opt/aws/aws-otel-collector/RELEASE_NOTE"
+cp LICENSE "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/"
+cp VERSION "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/bin/"
+cp "docs/releases/${VERSION}.md" "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/RELEASE_NOTE"
 
 # binary
-cp "build/linux/${SOURCE_ARCH}/aoc" "${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector"
+cp "scorecard-otel-collector/scorecard-otel-collector" "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/bin/scorecard-otel-collector"
 # ctl
-cp tools/ctl/linux/aws-otel-collector-ctl.sh "${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl"
+cp tools/ctl/linux/scorecard-otel-collector-ctl.sh "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/bin/scorecard-otel-collector-ctl"
 # default config
-cp config.yaml "${AOC_ROOT}/opt/aws/aws-otel-collector/var/.config.yaml"
+cp config.yaml "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/var/.config.yaml"
 # .env
-cp .env "${AOC_ROOT}/opt/aws/aws-otel-collector/etc"
-# extracfg.txt
-cp extracfg.txt "${AOC_ROOT}/opt/aws/aws-otel-collector/etc"
+cp .env "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/etc"
 # service config
-cp tools/packaging/linux/aws-otel-collector.service "${AOC_ROOT}/etc/systemd/system/"
-cp tools/packaging/linux/aws-otel-collector.conf "${AOC_ROOT}/etc/init/"
+cp tools/packaging/linux/scorecard-otel-collector.service "${SOC_ROOT}/etc/systemd/system/"
+cp tools/packaging/linux/scorecard-otel-collector.conf "${SOC_ROOT}/etc/init/"
 
 echo "assign permission to the files"
-chmod ug+rx "${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector"
-chmod ug+rx "${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl"
-chmod ug+rx "${AOC_ROOT}/opt/aws/aws-otel-collector/var/.config.yaml"
-chmod ug+rx "${AOC_ROOT}/opt/aws/aws-otel-collector/etc/.env"
+chmod ug+rx "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/bin/scorecard-otel-collector"
+chmod ug+rx "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/bin/scorecard-otel-collector-ctl"
+chmod ug+rx "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/var/.config.yaml"
+chmod ug+rx "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/etc/.env"
 
 echo "create symlinks"
-ln -f -s /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl "${AOC_ROOT}/usr/bin/aws-otel-collector-ctl"
-ln -f -s /opt/aws/aws-otel-collector/etc "${AOC_ROOT}/etc/amazon/aws-otel-collector"
-ln -f -s /opt/aws/aws-otel-collector/logs "${AOC_ROOT}/var/log/amazon/aws-otel-collector"
-ln -f -s /opt/aws/aws-otel-collector/var "${AOC_ROOT}/var/run/amazon/aws-otel-collector"
+ln -f -s /opt/scorecard/scorecard-otel-collector/bin/scorecard-otel-collector-ctl "${SOC_ROOT}/usr/bin/scorecard-otel-collector-ctl"
+ln -f -s /opt/scorecard/scorecard-otel-collector/etc "${SOC_ROOT}/etc/amazon/scorecard-otel-collector"
+ln -f -s /opt/scorecard/scorecard-otel-collector/logs "${SOC_ROOT}/var/log/amazon/scorecard-otel-collector"
+ln -f -s /opt/scorecard/scorecard-otel-collector/var "${SOC_ROOT}/var/run/amazon/scorecard-otel-collector"
 
 echo "build source tarball"
 tar -czvf "${RPM_NAME}-${VERSION}.tar.gz" -C "${WORK_DIR}" .

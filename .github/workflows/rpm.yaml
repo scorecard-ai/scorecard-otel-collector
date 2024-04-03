@@ -1,0 +1,11 @@
+on:
+  workflow_call:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package RPM
+        run: ./build.sh
