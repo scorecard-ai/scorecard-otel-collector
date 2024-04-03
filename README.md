@@ -1,8 +1,5 @@
 # Scorecard AI OpenTelemetry Collector Distro
 
-## Running
+This should not be run locally. It is configured to be run by triggering a GitHub Workflow:
 
-```sh
-./build.sh
-./scorecard-otelcol/scorecard-otelcol --config=file:config.yaml
-```
+https://github.com/scorecard-ai/scorecard-otel-collector/actions/workflows/rpm.yaml
