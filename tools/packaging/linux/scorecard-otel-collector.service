@@ -18,7 +18,7 @@
 # https://www.freedesktop.org/software/systemd/man/systemd.unit.html
 
 [Unit]
-Description=ADOT Collector
+Description=Scorecard Collector
 After=network.target
 
 [Service]

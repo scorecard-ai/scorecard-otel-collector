@@ -7,13 +7,12 @@ Group:      Applications/scorecard
 Source0:    %{RPM_NAME}-%{VERSION}.tar.gz
 
 %description
-This package provides daemon of ADOT Collector
+This package provides daemon of Scorecard Collector
 
 %prep
 %setup -q
 
 %install
-whoami
 rm -rf ${RPM_BUILD_ROOT}
 mkdir -p ${RPM_BUILD_ROOT}
 cp -fa * ${RPM_BUILD_ROOT}
