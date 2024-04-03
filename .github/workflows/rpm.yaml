@@ -27,7 +27,7 @@ jobs:
 
       - name: Set builder-config version.
         run: |
-          sed -i "s/VERSION_STRING/$VERSION/g"
+          sed -i "s/VERSION_STRING/$VERSION/g" builder-config.yaml
         env:
           VERSION: ${{ inputs.VERSION }}
 
