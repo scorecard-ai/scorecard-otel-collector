@@ -37,15 +37,14 @@ mkdir -p "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/doc"
 mkdir -p "${SOC_ROOT}/etc/init"
 mkdir -p "${SOC_ROOT}/etc/systemd/system"
 mkdir -p "${SOC_ROOT}/usr/bin"
-mkdir -p "${SOC_ROOT}/etc/amazon"
-mkdir -p "${SOC_ROOT}/var/log/amazon"
-mkdir -p "${SOC_ROOT}/var/run/amazon"
+mkdir -p "${SOC_ROOT}/etc/scorecard"
+mkdir -p "${SOC_ROOT}/var/log/scorecard"
+mkdir -p "${SOC_ROOT}/var/run/scorecard"
 
 echo "Copying application files"
 # License, version, release note...
 cp LICENSE "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/"
 cp VERSION "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/bin/"
-cp "docs/releases/${VERSION}.md" "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/RELEASE_NOTE"
 
 # binary
 cp "scorecard-otel-collector/scorecard-otel-collector" "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/bin/scorecard-otel-collector"
@@ -67,9 +66,9 @@ chmod ug+rx "${SOC_ROOT}/opt/scorecard/scorecard-otel-collector/etc/.env"
 
 echo "create symlinks"
 ln -f -s /opt/scorecard/scorecard-otel-collector/bin/scorecard-otel-collector-ctl "${SOC_ROOT}/usr/bin/scorecard-otel-collector-ctl"
-ln -f -s /opt/scorecard/scorecard-otel-collector/etc "${SOC_ROOT}/etc/amazon/scorecard-otel-collector"
-ln -f -s /opt/scorecard/scorecard-otel-collector/logs "${SOC_ROOT}/var/log/amazon/scorecard-otel-collector"
-ln -f -s /opt/scorecard/scorecard-otel-collector/var "${SOC_ROOT}/var/run/amazon/scorecard-otel-collector"
+ln -f -s /opt/scorecard/scorecard-otel-collector/etc "${SOC_ROOT}/etc/scorecard/scorecard-otel-collector"
+ln -f -s /opt/scorecard/scorecard-otel-collector/logs "${SOC_ROOT}/var/log/scorecard/scorecard-otel-collector"
+ln -f -s /opt/scorecard/scorecard-otel-collector/var "${SOC_ROOT}/var/run/scorecard/scorecard-otel-collector"
 
 echo "build source tarball"
 tar -czvf "${RPM_NAME}-${VERSION}.tar.gz" -C "${WORK_DIR}" .

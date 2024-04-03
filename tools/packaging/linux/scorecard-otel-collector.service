@@ -11,10 +11,10 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Location: /etc/systemd/system/aws-otel-collector.service
-# systemctl enable aws-otel-collector
-# systemctl start aws-otel-collector
-# systemctl | grep aws-otel-collector
+# Location: /etc/systemd/system/scorecard-otel-collector.service
+# systemctl enable scorecard-otel-collector
+# systemctl start scorecard-otel-collector
+# systemctl | grep scorecard-otel-collector
 # https://www.freedesktop.org/software/systemd/man/systemd.unit.html
 
 [Unit]
@@ -23,13 +23,13 @@ After=network.target
 
 [Service]
 Type=simple
-EnvironmentFile=/opt/aws/aws-otel-collector/etc/.env
-ExecStart=/opt/aws/aws-otel-collector/bin/aws-otel-collector $config
+EnvironmentFile=/opt/scorecard/scorecard-otel-collector/etc/.env
+ExecStart=/opt/scorecard/scorecard-otel-collector/bin/scorecard-otel-collector $config
 KillMode=process
 Restart=on-failure
 RestartSec=60s
-User=aoc
-Group=aoc
+User=soc
+Group=soc
 
 [Install]
 WantedBy=multi-user.target

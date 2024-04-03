@@ -1,5 +1,10 @@
 on:
-  workflow_call:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'SemVer Version (e.g. "0.0.1")'
+        required: true
+        type: string
 
 jobs:
   package:
@@ -7,5 +12,25 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+          check-latest: true
+          cache-dependency-path: builder-config.yaml
+
+      - name: Define VERSION
+        run: |
+          echo $VERSION > VERSION
+        env:
+          VERSION: ${{ inputs.VERSION }}
+
       - name: Package RPM
         run: ./build.sh
+
+      - name: Create Release
+        run: |
+          gh release create v${VERSION} --generate-notes build/packages/linux/amd64/scorecard-otel-collector.rpm
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          VERSION: ${{ inputs.VERSION }}

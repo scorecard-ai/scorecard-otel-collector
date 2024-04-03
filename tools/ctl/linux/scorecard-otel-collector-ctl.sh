@@ -16,7 +16,7 @@
 set -e
 set -u
 
-readonly AGENTDIR="/opt/aws/aws-otel-collector"
+readonly AGENTDIR="/opt/scorecard/scorecard-otel-collector"
 readonly CMDDIR="${AGENTDIR}/bin"
 readonly CONFDIR="${AGENTDIR}/etc"
 readonly ENV_FILE="${CONFDIR}/.env"
@@ -27,15 +27,15 @@ SYSTEMD='false'
 
 UsageString="
 
-  usage: aws-otel-collector-ctl -a stop|start|status| [-c <config-uri>]
+  usage: scorecard-otel-collector-ctl -a stop|start|status| [-c <config-uri>]
 
   e.g.
   1. start collector on onPermise host with a custom .yaml config file:
-  sudo aws-otel-collector-ctl -c /tmp/config.yaml -a start
+  sudo scorecard-otel-collector-ctl -c /tmp/config.yaml -a start
   2. stop the running collector
-  sudo aws-otel-collector-ctl -a stop
+  sudo scorecard-otel-collector-ctl -a stop
   3. query agent status:
-  sudo aws-otel-collector-ctl -a status
+  sudo scorecard-otel-collector-ctl -a status
 
   -a: action
   stop:                                   stop the agent process.
@@ -50,7 +50,7 @@ UsageString="
 
   "
 
-aoc_config_remote_uri() {
+soc_config_remote_uri() {
     config="${1:-}"
 
     sed -i '/^config=.*$/d' $ENV_FILE
@@ -58,14 +58,14 @@ aoc_config_remote_uri() {
 }
 
 
-aoc_config_local_uri() {
+soc_config_local_uri() {
     config="${1:-}"
 
     # Strip the file scheme in case it is present
     config="${config#file:}"
 
     sed -i '/^config=.*$/d' $ENV_FILE
-    echo "config=\"--config /opt/aws/aws-otel-collector/etc/config.yaml\"" >> $ENV_FILE
+    echo "config=\"--config /opt/scorecard/scorecard-otel-collector/etc/config.yaml\"" >> $ENV_FILE
 
 
     if [ -n "$config" ] && [ -f "$config" ]; then
@@ -82,7 +82,7 @@ aoc_config_local_uri() {
 
 # Used in case the collector starts for the first time without a configuration parameter
 # Safe to run as this will not overwrite a file if one exists in default location already.
-aoc_ensure_default_config() {
+soc_ensure_default_config() {
     if [ ! -f $CONFDIR/config.yaml ]; then
         cp -p $DFT_CONFDIR/.config.yaml $CONFDIR/config.yaml
     fi
@@ -98,56 +98,56 @@ is_remote_uri() {
     return 1
 }
 
-aoc_start() {
+soc_start() {
     config="${1:-}"
 
     # The previous configuration should be used if no configuration parameter is passed
-    aoc_ensure_default_config
+    soc_ensure_default_config
     if [ -n "$config" ]; then
         if is_remote_uri "$config"; then
-            aoc_config_remote_uri "$config"
+            soc_config_remote_uri "$config"
         else
-            aoc_config_local_uri "$config"
+            soc_config_local_uri "$config"
         fi
     fi
 
     if [ "${SYSTEMD}" = 'true' ]; then
         systemctl daemon-reload
-        systemctl enable aws-otel-collector.service
-        service aws-otel-collector restart
+        systemctl enable scorecard-otel-collector.service
+        service scorecard-otel-collector restart
     else
-        start aws-otel-collector
+        start scorecard-otel-collector
         sleep 1
     fi
 }
 
-aoc_stop() {
-    if [ "$(aoc_runstatus)" = 'stopped' ]; then
+soc_stop() {
+    if [ "$(soc_runstatus)" = 'stopped' ]; then
         return 0
     fi
 
     if [ "${SYSTEMD}" = 'true' ]; then
-        service aws-otel-collector stop
+        service scorecard-otel-collector stop
     else
-        stop aws-otel-collector || true
+        stop scorecard-otel-collector || true
     fi
 }
 
-aoc_preun() {
-    aoc_stop
+soc_preun() {
+    soc_stop
     if [ "${SYSTEMD}" = 'true' ]; then
-        systemctl disable aws-otel-collector.service
+        systemctl disable scorecard-otel-collector.service
         systemctl daemon-reload
         systemctl reset-failed
     fi
 }
 
-aoc_status() {
+soc_status() {
     pid=''
     if [ "${SYSTEMD}" = 'true' ]; then
-        pid="$(systemctl show -p MainPID aws-otel-collector.service | sed s/MainPID=//)"
+        pid="$(systemctl show -p MainPID scorecard-otel-collector.service | sed s/MainPID=//)"
     else
-        pid="$(initctl status aws-otel-collector | sed -n s/^.*process\ //p)"
+        pid="$(initctl status scorecard-otel-collector | sed -n s/^.*process\ //p)"
     fi
 
     starttime_fmt=''
@@ -159,22 +159,22 @@ aoc_status() {
     version="$(cat ${VERSION_FILE})"
 
     echo "{"
-    echo "  \"status\": \"$(aoc_runstatus)\","
+    echo "  \"status\": \"$(soc_runstatus)\","
     echo "  \"starttime\": \"${starttime_fmt}\","
     echo "  \"version\": \"${version}\""
     echo "}"
 }
 
-aoc_runstatus() {
+soc_runstatus() {
     running=false
     if [ "${SYSTEMD}" = 'true' ]; then
         set +e
-        if systemctl is-active aws-otel-collector.service 1>/dev/null; then
+        if systemctl is-active scorecard-otel-collector.service 1>/dev/null; then
             running='true'
         fi
         set -e
     else
-        if [ "$(initctl status aws-otel-collector | grep -c running)" = 1 ]; then
+        if [ "$(initctl status scorecard-otel-collector | grep -c running)" = 1 ]; then
             running='true'
         fi
     fi
@@ -239,11 +239,11 @@ main() {
     esac
 
     case "${action}" in
-    stop) aoc_stop ;;
-    start) aoc_start "${config_location}" ;;
-    status) aoc_status ;;
+    stop) soc_stop ;;
+    start) soc_start "${config_location}" ;;
+    status) soc_status ;;
     # helper for rpm+deb uninstallation hooks, not expected to be called manually
-    preun) aoc_preun ;;
+    preun) soc_preun ;;
     *)
         echo "Invalid action: ${action} ${UsageString}" >&2
         exit 1
