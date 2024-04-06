@@ -23,6 +23,7 @@ After=network.target
 
 [Service]
 Type=simple
+EnvironmentFile=-/home/ec2-user/.env
 EnvironmentFile=/opt/scorecard/scorecard-otel-collector/etc/.env
 ExecStart=/opt/scorecard/scorecard-otel-collector/bin/scorecard-otel-collector $config
 KillMode=process
